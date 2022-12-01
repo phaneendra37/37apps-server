@@ -14,13 +14,23 @@ module.exports = class V2 {
     let label = this.GetKeys("label", obj);
     let values = this.GetKeys("keys", obj);
     return db.execute(
-      `insert into ${this.table} (${label}) values (${values})`
+      `insert into ${this.table} (${label}) values (${JSON.stringify(
+        values
+      ).replace(/[[\]]/g, "")})`
     );
   }
   GetKeys(type, obj) {
-    let require_data;
-    if (type == "label") require_data = Object.keys(obj).toString();
-    else require_data = Object.values(obj).toString();
-    return require_data;
+    if (type == "label") {
+      let require_data;
+      require_data = Object.keys(obj).toString();
+      return require_data;
+    } else {
+      let key_values = [];
+      for (var k_value in obj) {
+        let val = obj[k_value];
+        key_values.push(val);
+      }
+      return key_values;
+    }
   }
 };
